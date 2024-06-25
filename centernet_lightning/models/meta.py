@@ -6,8 +6,9 @@ from torch import nn
 from torch.optim.lr_scheduler import CosineAnnealingLR, LinearLR, SequentialLR
 import pytorch_lightning as pl
 
-from vision_toolbox import backbones, necks
-from vision_toolbox.components import ConvBnAct
+import centernet_lightning.backbones  as backbones
+from ..necks import FPN, BiFPN, PAN
+from ..components import ConvNormAct
 
 
 _optimizers = {
@@ -19,7 +20,7 @@ _optimizers = {
 
 
 class GenericHead(nn.Sequential):
-    def __init__(self, in_channels: int, out_channels: int, width: int=256, depth: int=3, block=ConvBnAct, init_bias: float=None):
+    def __init__(self, in_channels: int, out_channels: int, width: int=256, depth: int=3, block=ConvNormAct, init_bias: float=None):
         super().__init__()
         for i in range(depth):
             in_c = in_channels if i == 0 else width
@@ -31,7 +32,7 @@ class GenericHead(nn.Sequential):
 
 
 class GenericModel(nn.Module):
-    def __init__(self, backbone: backbones.BaseBackbone, neck: necks.BaseNeck, heads: nn.Module, extra_block: nn.Module=None):
+    def __init__(self, backbone: backbones.BaseBackbone, neck: FPN, heads: nn.Module, extra_block: nn.Module=None):
         super().__init__()
         self.backbone = backbone
         self.neck = neck
@@ -85,8 +86,8 @@ class GenericLightning(pl.LightningModule):
             head_config = {}
         
         backbone: backbones.BaseBackbone = backbones.__dict__[backbone](pretrained=pretrained_backbone)
-        neck: necks.BaseNeck = necks.__dict__[neck](backbone.get_out_channels(), **neck_config)
-
+        # neck: FPN = neck(backbone.get_out_channels(), **neck_config)
+        neck:FPN = FPN(backbone.get_out_channels(), **neck_config)
         head_in_c = neck.get_out_channels()
         head_modules = nn.Module()
         for name, config in heads.items():

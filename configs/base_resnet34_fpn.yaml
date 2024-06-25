@@ -13,7 +13,7 @@ model:
       
   output_heads:
     heatmap:
-      num_classes: 80
+      num_classes: 1
       init_bias: -2.19
       target_method: cornernet         # cornernet or ttfnet
       loss_function: cornernet_focal   # cornernet or quality (gfocal)
@@ -25,7 +25,7 @@ model:
       loss_weight: 5
 
   optimizer:           # mmdetection
-    name: SGD          # any optimizers from torch.optim
+    name: ADAM          # any optimizers from torch.optim
     params:
       lr: 0.02
       momentum: 0.9
@@ -40,7 +40,7 @@ data:
   train:
     dataset:
       type: coco
-      data_dir: datasets/COCO
+      data_dir: /home/shiva/data/centernet_test/
       split: train2017
 
       # any transformations from Albumentation
@@ -62,7 +62,7 @@ data:
             saturation: 0.4
   
     dataloader:
-      batch_size: 32
+      batch_size: 10
       num_workers: 8
       shuffle: True
       pin_memory: True
@@ -70,7 +70,7 @@ data:
   validation:
     dataset:
       type: coco
-      data_dir: datasets/COCO
+      data_dir: /home/shiva/data/centernet_test/
       split: val2017
 
       transforms:
@@ -80,16 +80,17 @@ data:
             height: 512
     
     dataloader:
-      batch_size: 32
+      batch_size: 10
       num_workers: 8
       shuffle: False
       pin_memory: True
+  
 
 # pass to Lightning Trainer
 trainer:
   gpus: 1
   precision: 16
-  max_epochs: 5
+  max_epochs: 30
   val_check_interval: 1.0
   benchmark: True
   gradient_clip_val: 35     # mmdetection
@@ -101,16 +102,16 @@ trainer:
   #     log_model: True
 
   callbacks:
-    - name: ModelCheckpoint
+    - class_path: ModelCheckpoint
       params:
         monitor: val/AP
         mode: max
         save_last: True
 
-    - name: LearningRateMonitor
+    - class_path: LearningRateMonitor
       params:
         logging_interval: step
     
-    - name: LogImageCallback
+    - class_path: LogImageCallback
       params:
         n_epochs: 5

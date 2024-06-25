@@ -7,4 +7,4 @@ pytorch-lightning
 opencv-python
 albumentations>=1.0.0
 pycocotools
-trackeval @ git+https://github.com/JonathonLuiten/TrackEval.git
+trackeval@ git+https://github.com/JonathonLuiten/TrackEval.git

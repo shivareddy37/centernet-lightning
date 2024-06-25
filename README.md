@@ -19,7 +19,6 @@ Dependencies
 ```bash
 conda install pytorch torchvision cudatoolkit=11.3 -c pytorch
 pip install pytorch-lightning pycocotools albumentations
-pip install git+https://github.com/gau-nernst/vision-toolbox.git            # backbones and necks
 pip install filterpy git+https://github.com/JonathonLuiten/TrackEval.git    # for FairMOT
 pip install jsonargparse[signatures]                                        # for training
 ```

@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: centernet-lightning
+Version: 0.0.2
+Summary: CenterNet with PyTorch Lightning
+Home-page: https://github.com/gau-nernst/centernet-lightning
+Author: Thien Tran
+License-File: LICENSE
